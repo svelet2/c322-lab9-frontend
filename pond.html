@@ -17,14 +17,18 @@
     </ul>
 
     <div id="pond"></div>
-
+    <script src="configuration.js"></script>
     <script>
-      let host = "http://localhost:8080";
+      let host = getHost();
       let ducks = [];
       displayTheDucks();
 
       async function getAll() {
-        let response = await fetch(host + "/ducks");
+        const headers = {"Authorization": `Bearer ${configuration.token()}`};
+        let response = await fetch(host + "/ducks", {headers});
+        if (response.status == 401) {
+          logout();
+        }
         let result = await response.json();
         return result;
       }
@@ -38,13 +42,21 @@
         pond.innerHTML = "";
 
         for (let duck of ducks) {
+        const headers = {"Authorization": `Bearer ${configuration.token()}`};
+        let response = await fetch(`${host}/ducks/${duck.id}/image`, {headers}); // Include the authorization header in the image URL request
+        if (response.status == 401) {
+          logout();
+        }
+        let result = await response.blob(); // Use response.blob() to get the image data
+        let imageUrl = URL.createObjectURL(result); // Create object URL for the image blob
+
           let div = document.createElement("div");
           div.className = "flip-card";
           let innerHtml = `
             <div class="flip-card-inner">
               <div class="flip-card-front">
                <img
-                   src="${host}/ducks/${duck.id}/image"
+                   src="${imageUrl}"
                    alt="Duck"
                    style="width: 100%"
                 />
