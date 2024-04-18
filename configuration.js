@@ -42,7 +42,7 @@ async function updateTheNavigationBar() {
     let loginTag = navigation.children[navigation.children.length - 1];
     if (configuration.isLoggedIn()) {
         loginTag.innerHTML = 
-        '<li class="right"><a href="#" onclick="logout()">Logout</a></li>';
+        '<li class="right"><a href="login.html" onclick="logout()">Logout</a></li>';
     } else {
         loginTag.innerHTML = 
         '<li class="right"><a href="login.html">Login</a></li>';
